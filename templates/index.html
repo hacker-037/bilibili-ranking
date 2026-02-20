@@ -19,12 +19,10 @@
             padding: 0;
             font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
             
-            /* 1. 设置初始背景色渐变 */
+            /* 背景动态呼吸效果 */
             background: linear-gradient(45deg, #fce4ec, #e3f2fd, #fff0f5, #e8f5e9);
-            background-size: 400% 400%; /* 将背景拉大，这样移动时才会有平滑流动的效果 */
-            
-            /* 2. 调用我们定义的“呼吸”动画 */
-            animation: gradientBG 15s ease infinite;
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite; /* 这里的名字一定要对应下方的 @keyframes */
             
             min-height: 100vh;
             display: flex;
@@ -34,14 +32,13 @@
             color: #2c3e50;
         }
 
-        /* 3. 定义动画的具体过程：背景位置的偏移 */
+        /* 背景动画定义 */
         @keyframes gradientBG {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
 
-        /* 顶部装饰栏 */
         .header {
             text-align: center;
             margin-bottom: 40px;
@@ -52,7 +49,7 @@
             font-size: 2.5rem;
             background: linear-gradient(to right, var(--primary), #8e44ad);
             -webkit-background-clip: text;
-            background-clip: text;         /* 加上这行，警告就会消失 */
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             margin: 0;
             letter-spacing: 2px;
@@ -66,10 +63,10 @@
             letter-spacing: 4px;
         }
 
-        /* 视频卡片容器 */
         .video-card {
             background: var(--glass);
             backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px); /* 兼容 Safari */
             border: 1px solid rgba(255, 255, 255, 0.5);
             border-radius: 24px;
             box-shadow: var(--shadow);
@@ -77,6 +74,7 @@
             max-width: 480px;
             overflow: hidden;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            /* 同时运行入场动画和呼吸动画 */
             animation: fadeInUp 0.8s ease, cardPulse 6s ease-in-out infinite;
         }
 
@@ -85,11 +83,10 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
         }
 
-        /* 封面图效果 */
         .cover-wrapper {
             position: relative;
             width: 100%;
-            padding-top: 56.25%; /* 16:9 比例 */
+            padding-top: 56.25%;
             overflow: hidden;
         }
 
@@ -105,7 +102,6 @@
             transform: scale(1.1);
         }
 
-        /* 标签：TOP 1 */
         .rank-badge {
             position: absolute;
             top: 15px;
@@ -129,15 +125,15 @@
             font-weight: 700;
             line-height: 1.4;
             margin-bottom: 20px;
+            color: #1a1a1a;
+            /* 标准的文字截断写法 */
             display: -webkit-box;
             -webkit-line-clamp: 2;
+            line-clamp: 2; 
             -webkit-box-orient: vertical;
-            line-clamp: 2;         /* <--- 在这里手动加上这一行，警告就消失了 */
             overflow: hidden;
-            color: #1a1a1a;
         }
 
-        /* 统计数据网格 */
         .meta-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -172,7 +168,6 @@
             color: #bdc3c7;
         }
 
-        /* 按钮设计 */
         .nav-link {
             margin-top: 30px;
             padding: 12px 30px;
@@ -196,26 +191,24 @@
             box-shadow: 0 8px 20px rgba(251, 114, 153, 0.3);
         }
 
-        /* 入场动画 */
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
         @keyframes fadeInDown {
             from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* 响应式微调 */
-        @media (max-width: 480px) {
-            h1 { font-size: 1.8rem; }
-            .content { padding: 20px; }
-        }
-
-        /* 卡片呼吸动画 */ 
         @keyframes cardPulse {
             0%, 100% { box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08); } 
             50% { box-shadow: 0 12px 60px rgba(251, 114, 153, 0.3); }
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 1.8rem; }
+            .content { padding: 20px; }
         }
     </style>
 </head>
@@ -264,7 +257,7 @@
         </a>
 
     {% else %}
-        <div class="no-data">
+        <div class="no-data" style="text-align: center; background: var(--glass); padding: 40px; border-radius: 20px; backdrop-filter: blur(10px);">
             <p>📭 正在连接云端数据源...</p>
         </div>
     {% endif %}
