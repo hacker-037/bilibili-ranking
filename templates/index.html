@@ -1,55 +1,251 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    <title>B站全站排行榜 - 实时看板</title>
     <style>
-        /* 在原有的 style 基础上增加一个按钮样式 */
-        .nav-link {
-            margin-top: 20px;
-            color: var(--primary-color);
-            text-decoration: none;
-            font-size: 0.9rem;
-            border: 1px solid var(--primary-color);
-            padding: 8px 16px;
-            border-radius: 20px;
-            transition: all 0.3s;
+        :root {
+            --primary: #fb7299;
+            --secondary: #ff85a2;
+            --bg: #f0f2f5;
+            --glass: rgba(255, 255, 255, 0.85);
+            --shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
         }
-        .nav-link:hover {
-            background: var(--primary-color);
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #fce4ec 0%, #e3f2fd 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #2c3e50;
+        }
+
+        /* 顶部装饰栏 */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(to right, var(--primary), #8e44ad);
+            -webkit-background-clip: text;
+            background-clip: text;         /* 加上这行，警告就会消失 */
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+        }
+
+        /* 视频卡片容器 */
+        .video-card {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            width: 90%;
+            max-width: 480px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .video-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+        }
+
+        /* 封面图效果 */
+        .cover-wrapper {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 比例 */
+            overflow: hidden;
+        }
+
+        .cover-wrapper img {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .video-card:hover img {
+            transform: scale(1.1);
+        }
+
+        /* 标签：TOP 1 */
+        .rank-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: var(--primary);
             color: white;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            z-index: 10;
+            box-shadow: 0 4px 10px rgba(251, 114, 153, 0.4);
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 20px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            line-clamp: 2;         /* <--- 在这里手动加上这一行，警告就消失了 */
+            overflow: hidden;
+            color: #1a1a1a;
+        }
+
+        /* 统计数据网格 */
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #95a5a6;
+            margin-top: 4px;
+        }
+
+        .footer {
+            border-top: 1px solid rgba(0,0,0,0.05);
+            padding-top: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: #bdc3c7;
+        }
+
+        /* 按钮设计 */
+        .nav-link {
+            margin-top: 30px;
+            padding: 12px 30px;
+            background: white;
+            color: var(--primary);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-link:hover {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(251, 114, 153, 0.3);
+        }
+
+        /* 入场动画 */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 响应式微调 */
+        @media (max-width: 480px) {
+            h1 { font-size: 1.8rem; }
+            .content { padding: 20px; }
         }
     </style>
 </head>
 <body>
 
-    <h1>B站热门视频看板</h1>
+    <div class="header">
+        <h1>BiliBili Top Tracker</h1>
+        <div class="subtitle">每日全站榜首实时看板</div>
+    </div>
 
     {% if video %}
         <div class="video-card">
             <div class="cover-wrapper">
+                <div class="rank-badge">NO.1 RANKING</div>
                 <img src="{{ video.pic }}" alt="视频封面">
             </div>
             
             <div class="content">
                 <div class="title">{{ video.title }}</div>
                 
-                <div class="meta-info">
-                    <div class="info-item">UP主：<b>{{ video.owner }}</b></div>
-                    <div class="info-item">播放：<b>{{ video.views }}</b></div>
-                    <div class="info-item">弹幕：<b>{{ video.danmaku }}</b></div>
+                <div class="meta-grid">
+                    <div class="stat-item">
+                        <span class="stat-value">{{ video.owner }}</span>
+                        <span class="stat-label">UP主</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">{{ (video.views / 10000) | round(1) }}万</span>
+                        <span class="stat-label">播放</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">{{ video.danmaku }}</span>
+                        <span class="stat-label">弹幕</span>
+                    </div>
                 </div>
 
                 <div class="footer">
-                    <span>数据更新于：</span>
+                    <span>RECORD TIME</span>
                     <span>{{ video.time }}</span>
                 </div>
             </div>
         </div>
         
-        <a href="/history" class="nav-link">查看往期记录 →</a>
+        <a href="/history" class="nav-link">
+            <span>EXPLORE HISTORY</span>
+            <i>→</i>
+        </a>
 
     {% else %}
         <div class="no-data">
-            <p>📭 暂时还没有抓取到排行榜数据...</p>
+            <p>📭 正在连接云端数据源...</p>
         </div>
     {% endif %}
 
