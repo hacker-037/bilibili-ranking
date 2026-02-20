@@ -46,3 +46,7 @@ if __name__ == '__main__':
 
     # 启动Flask应用
     app.run(debug=True, port=5000)
+else:
+    # 当被 Vercel 等服务器调用时，跳过那些会报错的写操作
+    # 这样 Vercel 启动时就不会因为无法创建数据库而崩溃
+    pass
