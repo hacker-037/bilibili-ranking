@@ -1,0 +1,29 @@
+name: Daily Bili Record
+
+on:
+  schedule:
+    - cron: '0 4 * * *' # UTC 4:00 = 北京时间 12:00
+  workflow_dispatch: # 允许手动点按钮测试
+
+jobs:
+  run-spider:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # 关键：允许脚本修改并提交代码
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: pip install requests
+      - name: Run record
+        run: python record_script.py
+      - name: Commit and Push
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add data.json
+          git commit -m "chore: 每日自动更新数据 [skip ci]" || echo "No changes to commit"
+          git push

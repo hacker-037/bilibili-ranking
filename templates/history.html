@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    <title>历史记录 - B站视频排行榜</title>
+    <style>
+        /* 复用 index.html 的变量 */
+        :root { --primary-color: #fb7299; --bg-color: #f4f5f7; }
+        body { font-family: sans-serif; background: var(--bg-color); display: flex; flex-direction: column; align-items: center; padding: 40px 20px; }
+        h1 { color: #61666d; font-size: 1.5rem; margin-bottom: 30px; }
+        
+        .history-list { width: 100%; max-width: 600px; }
+        
+        .history-item {
+            background: white;
+            display: flex;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .history-item img { width: 160px; height: 100px; object-fit: cover; }
+        
+        .item-info { padding: 12px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        
+        .item-title {
+    font-weight: bold;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; /* 限制显示2行 */
+    line-clamp: 2;         /* 标准属性，加上这行警告就消失了 */
+    overflow: hidden;
+}
+
+        .item-meta { font-size: 0.8rem; color: #9499a0; margin-top: 5px; }
+
+        .back-btn { margin-bottom: 20px; text-decoration: none; color: #61666d; }
+    </style>
+</head>
+<body>
+
+    <a href="/" class="back-btn">← 返回今日榜首</a>
+    <h1>往期榜首记录</h1>
+
+    <div class="history-list">
+        {% for v in videos %}
+        <div class="history-item">
+            <img src="{{ v.pic }}" alt="封面">
+            <div class="item-info">
+                <div class="item-title">{{ v.title }}</div>
+                <div class="item-meta">
+                    UP主: {{ v.owner }} | 播放: {{ v.views }}<br>
+                    记录时间: {{ v.time }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</body>
+</html>
