@@ -18,13 +18,27 @@
             margin: 0;
             padding: 0;
             font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
-            background: linear-gradient(135deg, #fce4ec 0%, #e3f2fd 100%);
+            
+            /* 1. 设置初始背景色渐变 */
+            background: linear-gradient(45deg, #fce4ec, #e3f2fd, #fff0f5, #e8f5e9);
+            background-size: 400% 400%; /* 将背景拉大，这样移动时才会有平滑流动的效果 */
+            
+            /* 2. 调用我们定义的“呼吸”动画 */
+            animation: gradient 15s ease infinite;
+            
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             color: #2c3e50;
+        }
+
+        /* 3. 定义动画的具体过程：背景位置的偏移 */
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         /* 顶部装饰栏 */
@@ -63,7 +77,7 @@
             max-width: 480px;
             overflow: hidden;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            animation: fadeInUp 0.8s ease;
+            animation: fadeInUp 0.8s ease, cardPulse 6s ease-in-out infinite;
         }
 
         .video-card:hover {
@@ -196,6 +210,12 @@
         @media (max-width: 480px) {
             h1 { font-size: 1.8rem; }
             .content { padding: 20px; }
+        }
+
+        /* 卡片呼吸动画 */ 
+        @keyframes cardPulse {
+            0%, 100% { box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08); } 
+            50% { box-shadow: 0 12px 60px rgba(251, 114, 153, 0.3); }
         }
     </style>
 </head>
