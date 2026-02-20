@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B站视频排行榜</title>
+</head>
+<body>
+    <h1>最新的视频</h1>
+    {% if video %}
+        <div>
+            <h2>{{ video[1] }}</h2> <!-- 视频标题 -->
+            <p>上传者: {{ video[2] }}</p> <!-- 上传者 -->
+            <p>观看数: {{ video[3] }}</p> <!-- 观看数 -->
+            <p>弹幕数: {{ video[4] }}</p> <!-- 弹幕数 -->
+            <img src="{{ video[5] }}" alt="视频封面"> <!-- 视频封面 -->
+            <p>记录时间: {{ video[6] }}</p> <!-- 记录时间 -->
+        </div>
+    {% else %}
+        <p>没有找到视频数据。</p>
+    {% endif %}
+</body>
+</html>
