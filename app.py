@@ -26,3 +26,8 @@ def history():
     return render_template('history.html', videos=reversed(videos))
 
 # Vercel 不需要 app.run，直接暴露 app 对象即可
+
+# ... 你之前的爬虫和路由代码 ...
+if __name__ == '__main__':
+    # 这里的 debug=True 非常重要，它会告诉你哪里报错了
+    app.run(debug=True, port=5000)
