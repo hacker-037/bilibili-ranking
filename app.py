@@ -17,7 +17,7 @@ def index():
     videos = get_data()
     # 取最后一条记录（最新的）展示在首页
     latest_video = videos[-1] if videos else None
-    return render_template('index.html', video=latest_video)
+    return render_template('main.html', video=latest_video)
 
 @app.route('/history')
 def history():
